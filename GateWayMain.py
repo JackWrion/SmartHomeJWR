@@ -8,7 +8,7 @@ import serial.tools.list_ports
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
-AIO_KEY = "aio_PKBs417u0k1FTGBNzxZ1laAXB0nl"
+AIO_KEY = "aio_BscB42RehpKXgW3pONzGMV34aDtK"
 
 
 #2.-----Connect Microbit
@@ -138,7 +138,14 @@ def FaceReg_Out(ID):
     else:
         print ("Check Out:", ID )
     
-
+    
+def Register(ID):
+    try:
+        client.publish (str(ID), 0)
+    except:
+        pass
+    else:
+        print ("Register:", ID )
 
 
 def ConnectAdafruit():
