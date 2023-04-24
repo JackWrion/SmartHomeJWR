@@ -3,12 +3,12 @@ from Adafruit_IO import MQTTClient, Client, Feed
 import random
 import time
 import serial.tools.list_ports
-
+import AI
 
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
-AIO_KEY = "aio_BscB42RehpKXgW3pONzGMV34aDtK"
+AIO_KEY = "aio_USjw41ExbcA1RQE3pGcl8u3vx9WR"
 
 
 #2.-----Connect Microbit
@@ -143,9 +143,10 @@ def Register(ID):
     try:
         client.publish (str(ID), 0)
     except:
+        print ("Register from Adafruit ERROR !!!: ", ID )
         pass
     else:
-        print ("Register:", ID )
+        print ("Register from Adafruit successfully: ", ID )
 
 
 def ConnectAdafruit():
