@@ -7,8 +7,11 @@ import cv2
 import random
 
 def checkin(im,ID):
-    #### Do sth and return ID
-    #ID = 16122002
+    
+    ## Client --> AI --> DB --> Gateway --> Done
+
+
+    ## Detect with AI first
 
     name = "./cache/" + str(ID) + "_" + "111111" + ".jpg"
     image_input = cv2.cvtColor(im,cv2.COLOR_RGB2BGR)
@@ -20,6 +23,9 @@ def checkin(im,ID):
         greeting = 'Stranger detected !!!!'
         return im, greeting
 
+
+    ## parse ID of face detected and compare with input ID 
+
     face_parse = face_path.replace("./member_image/","")
     face_parse = face_parse.split('_')
 
@@ -27,8 +33,10 @@ def checkin(im,ID):
     username = face_parse[0]
 
     if userID == ID:
+        # check in DATABASE if user outdoor
         status = db.checkin(ID_input=userID, name_input=username)
         if status == 0:
+            # Update to MQTT
             gw.FaceReg_In(ID)
             greeting =  f"Welcome back, {username} !!!"
         else:
@@ -45,6 +53,8 @@ def checkin(im,ID):
 def checkout(im,ID):
     #ID = 16122002
     
+    # detect with  __AI__  first
+
     name = "./cache/" + str(ID) + "_" + "111111" + ".jpg"
     image_input = cv2.cvtColor(im,cv2.COLOR_RGB2BGR)
     cv2.imwrite(name, image_input)
@@ -61,10 +71,14 @@ def checkout(im,ID):
     userID = face_parse[1]
     username = face_parse[0]
 
+
+    ## Check in DB
     if userID == ID:
         status,count = db.checkout(ID_input=userID, name_input=username)
 
         if status == 0:
+
+            ## Update to MQTT
             gw.FaceReg_Out(ID, count)
             greeting =  f"See you soon, {username} !!!"
         else:

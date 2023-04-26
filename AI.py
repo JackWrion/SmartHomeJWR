@@ -1,8 +1,8 @@
 from deepface import DeepFace
 import pandas as pd
-import cv2
-import random
-import time
+# import cv2
+# import random
+# import time
 import os
 import traceback
 
