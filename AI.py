@@ -4,6 +4,7 @@ import cv2
 import random
 import time
 import os
+import traceback
 
 path = "./member_image/"
 
@@ -27,10 +28,11 @@ def register(name_input, ID):
 
              
 def Verification(path):
-    try: 
-        dfs = DeepFace.find(img_path = path, db_path = "./member_image", distance_metric="euclidean_l2",model_name="Facenet512")
+    try:
+        dfs = DeepFace.find(img_path = path, db_path = "./member_image", distance_metric="euclidean_l2",model_name="Facenet512",enforce_detection = False)
     except:
-        print("Unknown detected !!!")
+        traceback.print_exc()
+        print("Error detected !!!")
         return "Error"
 
     try:

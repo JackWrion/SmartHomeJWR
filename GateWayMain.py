@@ -8,7 +8,7 @@ import AI
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
-AIO_KEY = "aio_USjw41ExbcA1RQE3pGcl8u3vx9WR"
+AIO_KEY = "aio_hRkS90BTD7pHdtk3b87K3FuYmScF"
 
 
 #2.-----Connect Microbit
@@ -19,7 +19,7 @@ def getPort () :
     for i in range (0 , N) :
         port = ports [ i ]
         strPort = str( port )
-        if "USB Serial Device" in strPort :
+        if "USB-SERIAL CH340" in strPort :
             splitPort = strPort.split (" ")
             commPort = ( splitPort [0])
     return commPort
@@ -52,7 +52,9 @@ def disconnected ( client ) :
 def message ( client , feed_id , payload ):
     print (" Nhan du lieu tu " + str(feed_id) + ' : ' + payload )
     if (ser):
-        ser.write(  ( str(payload) + "#").encode() )
+        # ser.write(  ( str(payload) + "#").encode() )
+        ser.write(  ( str(payload) ).encode() )
+        
     
 
 
@@ -127,15 +129,18 @@ def FaceReg_In(ID):
     except:
         print('Stranger detected !!!!')
     else:
+        client.publish("bbc-led", 1)
         print ("Check In:", ID )
     
 
-def FaceReg_Out(ID):
+def FaceReg_Out(ID, count):
     try:
         client.publish (str(ID), 0)
     except:
         print('Stranger detected !!!!')
     else:
+        if (count == 0):
+            client.publish("bbc-led", 0)
         print ("Check Out:", ID )
     
     

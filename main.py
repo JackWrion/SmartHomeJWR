@@ -62,9 +62,10 @@ def checkout(im,ID):
     username = face_parse[0]
 
     if userID == ID:
-        status = db.checkout(ID_input=userID, name_input=username)
+        status,count = db.checkout(ID_input=userID, name_input=username)
+
         if status == 0:
-            gw.FaceReg_Out(ID)
+            gw.FaceReg_Out(ID, count)
             greeting =  f"See you soon, {username} !!!"
         else:
             greeting =  f"You are already out, {username} !\nMaybe, You want to check-in....??"
@@ -128,8 +129,8 @@ with gr.Blocks(css=".input_image { max-width: 800; max-height: none; }") as demo
     with gr.Tab("Demo Recognition: "):
         with gr.Row():
             with gr.Column():
-                img_in = gr.Image(source="webcam", streaming=True)
-                #img_in = gr.Image(source="upload")
+                #img_in = gr.Image(source="webcam", streaming=True)
+                img_in = gr.Image(source="upload")
                 text = gr.Text(placeholder="ID here")
                 with gr.Row():
                     Checkin_btn = gr.Button("Check in").style(css="background-color: yellow")
@@ -148,8 +149,8 @@ with gr.Blocks(css=".input_image { max-width: 800; max-height: none; }") as demo
     with gr.Tab("Register: "):
             with gr.Row():
                 with gr.Column():
-                    image_input = gr.Image(source="webcam", streaming=True)
-                    #image_input = gr.Image(source="upload")
+                    #image_input = gr.Image(source="webcam", streaming=True)
+                    image_input = gr.Image(source="upload")
                     name_input = gr.Text(label="Name:")
                     ID_input = gr.Text(label="ID:")
                 with gr.Column():

@@ -22,9 +22,10 @@ def addMember(image_input, name_input, ID_input):
 
 
 def checkin(ID_input, name_input):
-    doc = MemberColl.find( {'ID': ID_input } ).sort('_id',-1).limit(1)
-    doc = doc.next()
-    if doc['status'] == 0:
+    doc = MemberColl.find_one_and_update( {'ID': ID_input, 'type' : 'reg', 'status': 0 }, {"$set": {'status': 1}} )
+    
+    if doc:
+        #print (doc)
         MemberColl.insert_one( { 'ID': ID_input, 'name': name_input ,'status': 1, 'type' : 'in'  ,'date':  datetime.now() }  )
         return 0
     else:
@@ -34,10 +35,23 @@ def checkin(ID_input, name_input):
     
 
 def checkout(ID_input, name_input):
-    doc = MemberColl.find( {'ID': ID_input } ).sort('_id',-1).limit(1)
-    doc = doc.next()
-    if doc['status'] == 1:
+    doc = MemberColl.find_one_and_update( {'ID': ID_input, 'type' : 'reg', 'status': 1 }, {"$set": {'status': 0}} )
+
+    if doc:
+        #print (doc)
         MemberColl.insert_one( { 'ID': ID_input, 'name': name_input ,'status': 0, 'type' : 'out'  ,'date':  datetime.now() }  )
-        return 0
+
+        count = MemberColl.count_documents( { 'status': 1, 'type' : 'reg' } )
+        if (count == 0):
+            print("DB says: 'No one in house'")
+
+        return 0, count
     else:
-        return 1
+        return 1,-1
+    
+
+#print(checkout("16122002", "NguyenTrongTin"))
+
+# doc = MemberColl.find(  { 'type' : 'reg' }          )
+# for x in doc:
+#     print(x)
