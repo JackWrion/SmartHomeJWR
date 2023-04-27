@@ -55,23 +55,27 @@ with gr.Blocks(theme='finlaymacklon/boxy_violet@0.0.2') as demo:
                     name_input = gr.Text(label="Name:")
                     ID_input = gr.Text(label="ID:")
                 with gr.Column():
-                    img_out = gr.Image().style()
+                    img_out = gr.Image().style(height=500)
                     text_out = gr.Text()
 
             with gr.Row():
                 reg_button = gr.Button("SUBMIT")
                 clear_button = gr.Button("CLEAR")
     
+    reg_button.click(regis, inputs= [image_input, name_input, ID_input], outputs= [img_out,text_out])
+    clear_button.click(clear, inputs= None , outputs= [image_input,name_input, ID_input, img_out, text_out])
+    #demo_button.click(demo, inputs= image_input, outputs= None)    
+
 
     with gr.Tab("Register Stream: "):
             with gr.Row():
                 with gr.Column():
-                    image_input2 = gr.Image(source="webcam", streaming=True)
+                    image_input2 = gr.Image(source="webcam", streaming=True).style(height=500)
                     #image_input = gr.Image(source="upload")
                     name_input2 = gr.Text(label="Name:")
                     ID_input2 = gr.Text(label="ID:")
                 with gr.Column():
-                    img_out2 = gr.Image().style()
+                    img_out2 = gr.Image().style(height=500)
                     text_out2 = gr.Text()
 
             with gr.Row():
@@ -79,17 +83,9 @@ with gr.Blocks(theme='finlaymacklon/boxy_violet@0.0.2') as demo:
                 clear_button2 = gr.Button("CLEAR")
                 #demo_button = gr.Button("DEMO").style(css="background-color: orange")
                 
-
-    
-    reg_button.click(regis, inputs= [image_input, name_input, ID_input], outputs= [img_out,text_out])
-    clear_button.click(clear, inputs= None , outputs= [image_input,name_input, ID_input, img_out, text_out])
-    #demo_button.click(demo, inputs= image_input, outputs= None)
-    
-    
     reg_button2.click(regis, inputs= [image_input2, name_input2, ID_input2], outputs= [img_out2,text_out2])
     clear_button2.click(clear, inputs= None , outputs= [image_input2,name_input2, ID_input2, img_out2, text_out2])
 
-
-if __name__ == "__main__":
-    demo.launch(server_port=7900, auth=("admin", "adminvippro"), share=True)
+if __name__ == '__main__':
+    demo.launch(server_port=7900, auth=("adminvippro", "1"), )
 
