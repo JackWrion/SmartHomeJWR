@@ -1,10 +1,9 @@
 import sys
 from Adafruit_IO import MQTTClient, Client, Feed
-import random
 import time
 import serial.tools.list_ports
-import AI
 
+ser = None
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
@@ -29,8 +28,12 @@ def ConnectPort():
     if (port == 'None'): return
     return serial.Serial(port , baudrate =115200)
 
-ser = ConnectPort()
-print('Connecting Serial: ' , ser)
+
+
+
+def accessPort():
+    ser = ConnectPort()
+    print('Connecting Serial: ' , ser)
 
 
 
@@ -40,6 +43,9 @@ print('Connecting Serial: ' , ser)
 def connected ( client ) :
     print ("Ket noi thanh cong ...")
     client.subscribe( "bbc-led" )
+    client.subscribe( "door" )
+    client.subscribe( "alert" )
+
     #client.subscribe( 'face-reg' )
 
 def subscribe ( client , userdata , mid , granted_qos ) :
@@ -51,9 +57,23 @@ def disconnected ( client ) :
 
 def message ( client , feed_id , payload ):
     print (" Nhan du lieu tu " + str(feed_id) + ' : ' + payload )
+    
     if (ser):
-        # ser.write(  ( str(payload) + "#").encode() )
-        ser.write(  ( str(payload) ).encode() )
+        if (feed_id == "bbc-led"):
+            ser.write(  ( str(payload) ).encode() )
+
+    if (feed_id == "door" and str(payload) == "2" ):
+            time.sleep(5)
+            client.publish("door", 3)
+
+    
+
+        
+            
+        
+        
+        
+        
         
     
 
@@ -130,6 +150,8 @@ def FaceReg_In(ID):
         print('Stranger detected !!!!')
     else:
         client.publish("bbc-led", 1)
+        client.publish("door", 2)
+
         print ("Check In:", ID )
     
 
@@ -139,8 +161,11 @@ def FaceReg_Out(ID, count):
     except:
         print('Stranger detected !!!!')
     else:
+        
         if (count == 0):
             client.publish("bbc-led", 0)
+
+        client.publish("door", 2)
         print ("Check Out:", ID )
     
     
