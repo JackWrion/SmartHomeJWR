@@ -1,6 +1,7 @@
 from deepface import DeepFace
 import pandas as pd
-# import cv2
+import cv2
+import base64
 # import random
 # import time
 import os
@@ -26,23 +27,45 @@ def register(name_input, ID):
         pass
     print("Register successfully from AI !!!!")
 
-             
-def Verification(path):
+
+def StrangerEncode(rawImg):
+    rawImg = cv2.resize(rawImg, (640, 480))
+    r, data = cv2.imencode(".jpg", rawImg, [cv2.IMWRITE_JPEG_QUALITY, 50])
+    #print( "first raw", len(data)  )
+    if (len(data) > 90000):
+        r, data = cv2.imencode(".jpg", rawImg,[cv2.IMWRITE_JPEG_QUALITY, 50])
+    #print( "end raw", len(data)  )
+    data = base64.b64encode(data)
+
+    return data
+
+
+def Verification(im, ID):
+
+    path = "./cache/" + str(ID) + "_" + "111111" + ".jpg"
+    image_input = cv2.cvtColor(im,cv2.COLOR_RGB2BGR)
+    cv2.imwrite(path, image_input)
+
+
     try:
-        dfs = DeepFace.find(img_path = path, db_path = "./member_image", distance_metric="euclidean_l2",model_name="Facenet512",enforce_detection = False)
+        dfs = DeepFace.find(img_path = path, db_path = "./member_image", distance_metric="cosine",model_name="Facenet512",enforce_detection = True)
     except:
         traceback.print_exc()
         print("Error detected !!!")
-        return "Error"
+        data = StrangerEncode(image_input)
+        return "Error", data
 
     try:
         namedected = dfs[0].iloc[0]["identity"]
     except:
         print("Unknown detected !!!")
-        return "None"
+        data = StrangerEncode(image_input)
+        return "None", data
     else:
         print("Verify from AI !!!! ")
-        return dfs[0].iloc[0]["identity"]
+        return namedected, None
+
+
 
 #register("NguyenTrongTin","16122002")
 

@@ -52,7 +52,7 @@ def checkout(ID_input, name_input):
 
 #print(checkout("16122002", "NguyenTrongTin"))
 
-# doc = MemberColl.find(  { 'name' : 'Jennie' }          )
+# doc = MemberColl.find(  { 'type' : 'reg' }          )
 # for x in doc:
 #     print(x)
 

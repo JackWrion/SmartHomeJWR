@@ -3,7 +3,12 @@ from Adafruit_IO import MQTTClient, Client, Feed
 import time
 import serial.tools.list_ports
 
+
+
 ser = None
+
+
+
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
@@ -29,9 +34,8 @@ def ConnectPort():
     return serial.Serial(port , baudrate =115200)
 
 
-
-
 def accessPort():
+    global ser
     ser = ConnectPort()
     print('Connecting Serial: ' , ser)
 
@@ -49,34 +53,29 @@ def connected ( client ) :
     #client.subscribe( 'face-reg' )
 
 def subscribe ( client , userdata , mid , granted_qos ) :
-    print(" Subcribe thanh cong ...")
+    print("Subcribe thanh cong ...", mid)
 
 def disconnected ( client ) :
-    print(" Ngat ket noi ...")
+    print("Ngat ket noi ...")
     sys.exit(1)
 
 def message ( client , feed_id , payload ):
     print (" Nhan du lieu tu " + str(feed_id) + ' : ' + payload )
+    # ser.write(  ( str(payload) ).encode() )
     
-    if (ser):
-        if (feed_id == "bbc-led"):
-            ser.write(  ( str(payload) ).encode() )
+    if (feed_id == "bbc-led" and ser):
+        print("Writing to Yolobit....")
+        ser.write(  ( str(payload) ).encode() )
 
+    
     if (feed_id == "door" and str(payload) == "2" ):
-            time.sleep(5)
-            client.publish("door", 3)
+        time.sleep(5)
+        client.publish("door", 3)
 
-    
-
-        
-            
-        
-        
         
         
         
     
-
 
 
 
@@ -147,36 +146,44 @@ def FaceReg_In(ID):
     try:
         client.publish (str(ID), 1)
     except:
-        print('Stranger detected !!!!')
+        print('Stranger detected !!!!\n')
     else:
         client.publish("bbc-led", 1)
         client.publish("door", 2)
 
-        print ("Check In:", ID )
+        print ("Check In:", ID ,"\n")
     
 
 def FaceReg_Out(ID, count):
     try:
         client.publish (str(ID), 0)
     except:
-        print('Stranger detected !!!!')
+        print('Stranger detected !!!!\n')
     else:
         
         if (count == 0):
             client.publish("bbc-led", 0)
 
         client.publish("door", 2)
-        print ("Check Out:", ID )
+        print ("Check Out:", ID ,"\n")
     
     
 def Register(ID):
     try:
         client.publish (str(ID), 0)
     except:
-        print ("Register from Adafruit ERROR !!!: ", ID )
+        print ("Register from Adafruit ERROR !!!: ", ID,"\n" )
         pass
     else:
-        print ("Register from Adafruit successfully: ", ID )
+        print ("Register from Adafruit successfully: ", ID ,"\n")
+
+
+def stranger(data):
+    client.publish("alert",5)
+    client.publish("image", data)
+    print("Alert from Adafruit...\n")
+    
+    
 
 
 def ConnectAdafruit():
@@ -189,6 +196,7 @@ def ConnectAdafruit():
     client.loop_background ()
 
 
-#while True:
-#    readSerial()
-#    time.sleep (5)
+# while True:
+#     time.sleep(3)
+#     data = cv2.imread("ElonMusk1.jpg")
+#     print(len(data))
