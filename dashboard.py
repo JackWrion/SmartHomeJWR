@@ -46,6 +46,31 @@ def run_query():
     df = pd.DataFrame(data)
     return df
 
+
+def run_query_inhouse():
+    query = {'type': 'reg'}
+    projection = {"_id": 0}         # 0 mean exclude _id from query result
+    docs = db.MemberColl.find(query, projection)
+
+    data_list = list(docs)
+
+    # Handle datetime format -> iso format
+    for data in data_list:
+        data['date'] = data['date'].isoformat()
+
+    # convert to json type
+    data_json = json.dumps(data_list)
+
+    data = json.loads(data_json)
+    df = pd.DataFrame(data)
+    return df
+
+
+
+
+
+
+
 def getCount():
     query = {'type': {'$ne': 'reg'}}
     projection = {"_id": 0}         # 0 mean exclude _id from query result
@@ -58,12 +83,15 @@ with gr.Blocks() as dashboard:
         gr.Markdown("# 📝 Log Status Dashboard")
         with gr.Row():
             btn = gr.Button("Show Log")
+            btn2 = gr.Button("Who in house ?")
             gr.Number(getCount, label="Number of Logs", every=20.0)
-        btn.click(run_query, outputs=gr.DataFrame(run_query))
+        dataframe = gr.DataFrame(run_query)
+        btn.click(run_query, outputs=dataframe)
+        btn2.click(run_query_inhouse, outputs=dataframe)
     with gr.Tab("Bar Plot"):
         bar_plot.render()
     with gr.Tab("Line Plot"):
         line_plot.render()
     
 if __name__ == "__main__":
-    dashboard.queue().launch()
+    dashboard.queue().launch(server_port=8100)
