@@ -50,7 +50,9 @@ def checkout(ID_input, name_input):
         return 1,-1
     
 
-#print(checkout("16122002", "NguyenTrongTin"))
+# print(checkout("16122002", "NguyenTrongTin"))
+
+# checkout("121", "hanh")
 
 # doc = MemberColl.find(  { 'type' : 'reg' }          )
 # for x in doc:
