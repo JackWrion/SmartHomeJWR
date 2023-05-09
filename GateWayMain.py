@@ -12,7 +12,7 @@ ser = None
 
 #1.-----config login Ada
 AIO_USERNAME = "jackwrion12345"
-AIO_KEY = "aio_hRkS90BTD7pHdtk3b87K3FuYmScF"
+AIO_KEY = "aio_jgfr16Jb92VLez2J9XJ1ooVLxTsq"
 
 
 #2.-----Connect Microbit
@@ -60,7 +60,14 @@ def disconnected ( client ) :
     sys.exit(1)
 
 def message ( client , feed_id , payload ):
-    print (" Nhan du lieu tu " + str(feed_id) + ' : ' + payload )
+    if int(payload) == 2:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Door Opening')
+    elif int(payload) == 3:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Door Closing')
+    elif int(payload) == 1:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Led Switching On')
+    elif int(payload) == 0:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Led Switching Off')
     # ser.write(  ( str(payload) ).encode() )
     
     if (feed_id == "bbc-led" and ser):
