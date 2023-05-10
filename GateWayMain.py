@@ -60,7 +60,14 @@ def disconnected ( client ) :
     sys.exit(1)
 
 def message ( client , feed_id , payload ):
-    print (" Nhan du lieu tu " + str(feed_id) + ' : ' + payload )
+    if int(payload) == 2:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Door Opening')
+    elif int(payload) == 3:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Door Closing')
+    elif int(payload) == 1:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Led Switching On')
+    elif int(payload) == 0:
+        print (f' Nhan du lieu tu {str(feed_id)} :  {payload} - Led Switching Off')
     # ser.write(  ( str(payload) ).encode() )
     
     if (feed_id == "bbc-led" and ser):
